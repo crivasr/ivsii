@@ -228,7 +228,6 @@ var meshVS = `
 	varying vec2 TexCoords;
 	varying vec3 Normal;
     varying vec3 FragPos;
-    varying mat4 Model;
 
 	uniform mat4 mvp;
 	uniform mat4 model;
@@ -239,7 +238,6 @@ var meshVS = `
 		TexCoords = tex;
 		Normal    = normalize(mat3(model) * normal);
         FragPos   = vec3(model * vec4(pos, 1));
-        Model     = model;
 
 		vec3 swapedPos = shouldSwapZY ? pos.xzy : pos;
 		gl_Position = mvp * vec4(swapedPos,1);
@@ -253,7 +251,6 @@ var meshFS = `
     varying vec2 TexCoords;
 	varying vec3 Normal;
     varying vec3 FragPos;
-    varying mat4 Model;
 
     uniform sampler2D tex;
 
@@ -266,15 +263,18 @@ var meshFS = `
     void main()
     {		
         if (shouldShowTexture) {
+		    vec4 albedo = texture2D(tex, TexCoords);
+			if (albedo.a < 0.1) discard;
+
             vec3 ambient = 0.17 * ambientColor;
             
-            vec3 lightWorldPos = vec3(Model * vec4(lightPosition, 1));
-            vec3 lightDir = normalize(lightWorldPos - FragPos);
+            vec3 lightDir = normalize(lightPosition - FragPos);
 
             float diff = max(dot(Normal, lightDir), 0.0);
             vec3 diffuse = diff * lightColor;
 
             vec3 viewDir = normalize(viewPos - FragPos);
+			// vec3 reflectDir = 2.0 * dot(Normal, lightDir) * Normal - lightDir;
             vec3 reflectDir = reflect(lightDir, Normal);
             
             float specularStrength = 0.5;
@@ -282,10 +282,8 @@ var meshFS = `
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
             vec3 specular = specularStrength * spec * lightColor;
 
-            vec3 albedo = texture2D(tex, TexCoords).rgb;
-
-            vec3 color = (ambient + diffuse + specular) * albedo;
-            gl_FragColor = vec4(color, 1.0);
+            vec3 color = (ambient + diffuse + specular) * albedo.rgb;
+            gl_FragColor = vec4(color, albedo.a);
         } else {
             gl_FragColor = vec4(1,0,gl_FragCoord.z*gl_FragCoord.z,1);
         }

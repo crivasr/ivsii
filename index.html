@@ -27,10 +27,29 @@
 				<div class="control"><input id="auto-rotate" name="auto-rotate" type="checkbox" autocomplete="off" onchange="AutoRotate(this)"/><label for="auto-rotate"> Calesita </label></div>
 				<div class="control"><input id="rotation-speed" type="range" min="1" max="100" value="50" disabled/></div>
 			</div>
+			<hr>
+			<div class="control-group">
+				<div class="control">
+					<label> Light Position: </label>
+					<input id="light-position-x" name="light-position-x" type="range" min="-5" max="5" step="0.1" value="0" autocomplete="off" oninput="MoveLightX(this)"/>
+					<input id="light-position-y" name="light-position-y" type="range" min="-5" max="5" step="0.1" value="0" autocomplete="off" oninput="MoveLightY(this)"/>
+					<input id="light-position-z" name="light-position-z" type="range" min="-5" max="5" step="0.1" value="0" autocomplete="off" oninput="MoveLightZ(this)"/>
+				</div>
+                <div class="control">
+                    <label> Light Color: </label>
+                    <input id="light-color" name="light-color" type="color" autocomplete="off" onchange="SetLightColor(this)"/>
+                </div>
+                <div class="control">
+                    <label> Ambient Color: </label>
+                    <input id="ambient-color" name="ambient-color" type="color" autocomplete="off" onchange="SetAmbientColor(this)"/>
+			    </div>
+            </div>
+			<hr>
 			<div class="control-group">
 				<div class="control">Modelo (.obj):<br/><input id="obj" type="file" onchange="LoadObj(this)" accept=".obj"/></div>
 				<div class="control">Textura:<br/><input id="texture" type="file" onchange="LoadTexture(this)" accept="image/*"/></div>
 			</div>
+			<hr>
 			<div class="control-group">
 				<img id="texture-img" />
 			</div>

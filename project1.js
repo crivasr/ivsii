@@ -6,6 +6,7 @@ var canvas, gl;         // canvas y contexto WebGL
 var perspectiveMatrix;	// matriz de perspectiva
 
 var rotX=0, rotY=0, transZ=3, autorot=0; // rotaciones 
+var lightPosition = new Float32Array([0,0,0]); // posición de la luz
 
 // Funcion de inicialización, se llama al cargar la página
 function InitWebGL()
@@ -84,13 +85,15 @@ function UpdateProjectionMatrix()
 function DrawScene()
 {
 	// 1. Obtenemos las matrices de transformación 
-	var mvp = GetModelViewProjection( perspectiveMatrix, 0, 0, transZ, rotX, autorot+rotY );
+	var mvp   = GetModelViewProjection( perspectiveMatrix, 0, 0, transZ, rotX, autorot+rotY );
+	var model = GetModelMatrix(rotX, autorot+rotY);
 
 	// 2. Limpiamos la escena
 	gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 		
 	// 3. Le pedimos a cada objeto que se dibuje a si mismo
-	meshDrawer.draw( mvp );
+    let viewPosition = new Float32Array([0,0,transZ]);
+	meshDrawer.draw( mvp, model, lightPosition, viewPosition );
 	// Queremos que los ejes se muestren sobre la caja, como el depth testing descarta los fragmentos
 	// que tienen mayor o igual profundidad, dibujamos primero los ejes y despues la caja.
 	if ( showAxes.checked )
@@ -253,7 +256,7 @@ function AutoRotate( param )
 				// Reenderizamos
 				DrawScene();
 
-			}, 30
+			}, Math.floor(1000/60)
 		);
 		document.getElementById('rotation-speed').disabled = false;
 	} 
@@ -303,7 +306,7 @@ function LoadObj( param )
 			var scale = 1/maxSize;
 			mesh.shiftAndScale( shift, scale );
 			var buffers = mesh.getVertexBuffers();
-			meshDrawer.setMesh( buffers.positionBuffer, buffers.texCoordBuffer );
+			meshDrawer.setMesh( buffers.positionBuffer, buffers.texCoordBuffer, buffers.normalBuffer );
 			DrawScene();
 		}
 		reader.readAsText( param.files[0] );
@@ -330,3 +333,43 @@ function LoadTexture( param )
 	}
 }
 
+function MoveLightX( param )
+{
+	lightPosition[0] = param.value;
+	DrawScene();
+}
+
+function MoveLightY( param )
+{
+	lightPosition[1] = param.value;
+	DrawScene();
+}
+
+function MoveLightZ( param )
+{
+	lightPosition[2] = param.value;
+	DrawScene();
+}
+
+function SetLightColor( param )
+{
+    meshDrawer.setLightColor( HexToRgb(param.value) );
+    DrawScene();
+}
+
+function SetAmbientColor( param )
+{
+    meshDrawer.setAmbientColor( HexToRgb(param.value) );
+    DrawScene();
+}
+
+function HexToRgb(hex)
+{
+    hex = hex.replace('#', '');
+
+    let R = parseInt(hex.substring(0, 2), 16)/255;
+    let G = parseInt(hex.substring(2, 4), 16)/255;
+    let B = parseInt(hex.substring(4, 6), 16)/255;
+    
+    return new Float32Array([R, G, B]);
+}

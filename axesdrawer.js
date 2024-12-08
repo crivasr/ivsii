@@ -29,12 +29,12 @@ class AxesDrawer {
 		];
 
 		var colors = [
-			0, 0, 1,
-			0, 0, 1,
 			1, 0, 0,
 			1, 0, 0,
 			0, 1, 0,
-			0, 1, 0
+			0, 1, 0,
+			0, 0, 1,
+			0, 0, 1
 		]
 
 		this.numLines = pos.length / 3 / 2;

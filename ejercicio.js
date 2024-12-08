@@ -204,6 +204,10 @@ class MeshDrawer
 		gl.useProgram( this.prog );
 		gl.bindTexture(gl.TEXTURE_2D, this.tex);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+		
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	
 		gl.generateMipmap(gl.TEXTURE_2D);
 	}
 	

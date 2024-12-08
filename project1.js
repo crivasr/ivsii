@@ -92,7 +92,7 @@ function DrawScene()
 	gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 		
 	// 3. Le pedimos a cada objeto que se dibuje a si mismo
-    let viewPosition = new Float32Array([0,0,transZ]);
+    let viewPosition = new Float32Array([0,0,-transZ]);
 	meshDrawer.draw( mvp, model, lightPosition, viewPosition );
 	// Queremos que los ejes se muestren sobre la caja, como el depth testing descarta los fragmentos
 	// que tienen mayor o igual profundidad, dibujamos primero los ejes y despues la caja.

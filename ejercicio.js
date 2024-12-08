@@ -275,7 +275,7 @@ var meshFS = `
 
             vec3 viewDir = normalize(viewPos - FragPos);
 			// vec3 reflectDir = 2.0 * dot(Normal, lightDir) * Normal - lightDir;
-            vec3 reflectDir = reflect(lightDir, Normal);
+            vec3 reflectDir = reflect(-lightDir, Normal);
             
             float specularStrength = 0.5;
             float shininess = 32.0;

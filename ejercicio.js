@@ -274,12 +274,11 @@ var meshFS = `
             vec3 diffuse = diff * lightColor;
 
             vec3 viewDir = normalize(viewPos - FragPos);
-			// vec3 reflectDir = 2.0 * dot(Normal, lightDir) * Normal - lightDir;
-            vec3 reflectDir = reflect(-lightDir, Normal);
+			vec3 halfwayDir = normalize(lightDir + viewDir);
             
             float specularStrength = 0.5;
             float shininess = 32.0;
-            float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+            float spec = pow(max(dot(halfwayDir, Normal), 0.0), shininess);
             vec3 specular = specularStrength * spec * lightColor;
 
             vec3 color = (ambient + diffuse + specular) * albedo.rgb;

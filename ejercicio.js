@@ -235,11 +235,13 @@ var meshVS = `
 
 	void main()
 	{
-		TexCoords = tex;
-		Normal    = normalize(mat3(model) * normal);
-        FragPos   = vec3(model * vec4(pos, 1));
-
 		vec3 swapedPos = shouldSwapZY ? pos.xzy : pos;
+		vec3 swapedNormal = shouldSwapZY ? normal.xzy : normal;
+
+		TexCoords = tex;
+		Normal    = normalize(mat3(model) * swapedNormal);
+        FragPos   = vec3(model * vec4(swapedPos, 1));
+
 		gl_Position = mvp * vec4(swapedPos,1);
 	}
 `;
@@ -284,7 +286,7 @@ var meshFS = `
             vec3 color = (ambient + diffuse + specular) * albedo.rgb;
             gl_FragColor = vec4(color, albedo.a);
         } else {
-            gl_FragColor = vec4(1,0,gl_FragCoord.z*gl_FragCoord.z,1);
+            gl_FragColor = vec4(Normal,1);
         }
     }
 `;
